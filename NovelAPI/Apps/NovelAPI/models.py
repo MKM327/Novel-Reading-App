@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.contrib.auth.models import User
 # Create your models here.
 
 
@@ -21,7 +21,16 @@ class Chapter(models.Model):
     content = models.TextField(null=True, blank=True)
     pub_date = models.DateField()
     read_count = models.IntegerField(default=0)
-
+    
     def __str__(self):
         return f"{self.title} from {self.novel.title}"
-    
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    favorites = models.ManyToManyField(Novel ,related_name='favorites')
+    read = models.ManyToManyField(Chapter, related_name='read')
+    likes = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f"{self.user.username} Profile"

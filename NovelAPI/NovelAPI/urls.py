@@ -21,4 +21,5 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('admin/', admin.site.urls),
     path('api/v1/', include('Apps.NovelAPI.api.urls')),
+    path('api/v1/auth/', include('Apps.NovelAuth.api.urls')),
 ]
