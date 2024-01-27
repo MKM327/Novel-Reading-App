@@ -1,8 +1,10 @@
 
 from Apps.NovelAPI.models import Novel, Chapter
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
 from .serializers import NovelSerializer, ChapterSerializer, AddChapterSerializer
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 
 @api_view(['GET'])
@@ -19,6 +21,8 @@ def get_routes(request):
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
 def novel(request, title):
     try:
         novel = Novel.objects.get(title=title)
@@ -39,6 +43,8 @@ def novel(request, title):
 
 
 @api_view(['GET', 'POST'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
 def novel_chapters(request, title):
     try:
         novel = Novel.objects.get(title=title)
@@ -57,6 +63,8 @@ def novel_chapters(request, title):
 
 
 @api_view(['POST', 'GET'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
 def create_novel(request):
     if request.method == 'GET':
         novels = Novel.objects.all()
@@ -71,6 +79,8 @@ def create_novel(request):
 
 
 @api_view(['GET', 'PUT', 'DELETE','PATCH'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
 def manage_chapter(request, chapter_id):
     try:
         chapter = Chapter.objects.get(pk=chapter_id)
