@@ -1,4 +1,4 @@
-import { API } from "@/lib/exports";
+import { PUBLIC_API } from "@/lib/exports";
 export interface Novel {
     id: number;
     title: string;
@@ -16,7 +16,7 @@ export interface Chapter {
 }
 export async function fetchNovel(novel: string) {
     try {
-        let response = await API.get<Novel>(`novels/${novel}`)
+        let response = await PUBLIC_API.get<Novel>(`novels/${novel}`)
         if (response.status !== 200) {
             throw new Error("Failed to fetch novel");
         }
@@ -28,7 +28,7 @@ export async function fetchNovel(novel: string) {
 }
 export async function fetchChapters(novel: string) {
     try {
-        let response = await API.get<Chapter[]>(`novels/${novel}/chapters`)
+        let response = await PUBLIC_API.get<Chapter[]>(`novels/${novel}/chapters`)
         if (response.status !== 200) {
             throw new Error("Failed to fetch chapters");
         }
