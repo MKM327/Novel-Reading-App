@@ -4,6 +4,7 @@ import { getServerSession } from "next-auth"
 import { PUBLIC_API } from "@/lib/exports"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { JWT } from "next-auth/jwt"
+import { get } from "http"
 
 export const config = {
     secret: process.env.NEXAUTH_SECRET,
@@ -34,19 +35,24 @@ export const config = {
         updateAge: 5 * 60
     },
     callbacks: {
-        async jwt({ token, user, profile, account }) {
+        async jwt({ token, user, account }: { token: JWT, user: any, account: any }) {
             if (user && account) {
-                console.log(Date.now() + 60 * 5);
                 return {
                     ...user,
                     accessTokenExpires: Date.now() + 60 * 5 * 1000,
                 }
             }
-            console.log(token.accessTokenExpires, Date.now())
             if (Date.now() < token.accessTokenExpires) {
                 return token
             }
-            return getWithRefreshToken(token);
+            const newToken = await getWithRefreshToken(token);
+            if (newToken) {
+                Object.assign(token, {
+                    access: newToken.access,
+                    accessTokenExpires: newToken.accessTokenExpires,
+                });
+                return token;
+            }
         },
         async session({ session, token, user }) {
             if (token) {
@@ -62,17 +68,16 @@ export const config = {
 
 async function getWithRefreshToken(token: JWT) {
     try {
-        const response = await PUBLIC_API.post("auth/token/refresh/",
-            { refresh: token.refresh },
-            {
-                headers: { "Content-Type": "application/json" }
-            })
+        const response = await PUBLIC_API.post<{ access: string }>("auth/token/refresh/",
+            { refresh: token.refresh })
         if (response.status === 200) {
-            return {
+            const data = {
                 ...token,
                 access: response.data.access,
                 accessTokenExpires: Date.now() + 60 * 5 * 1000,
             }
+            console.log(data);
+            return data
         }
     }
     catch (error) {
