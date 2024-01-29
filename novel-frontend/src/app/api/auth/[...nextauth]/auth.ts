@@ -31,7 +31,7 @@ export const config = {
     ],
     session: {
         strategy: "jwt",
-        maxAge: 60 * 60 * 60,
+        maxAge: 5 * 60,
         updateAge: 5 * 60
     },
     callbacks: {
@@ -42,17 +42,11 @@ export const config = {
                     accessTokenExpires: Date.now() + 60 * 5 * 1000,
                 }
             }
-            if (Date.now() < token.accessTokenExpires) {
-                return token
-            }
-            const newToken = await getWithRefreshToken(token);
-            if (newToken) {
-                Object.assign(token, {
-                    access: newToken.access,
-                    accessTokenExpires: newToken.accessTokenExpires,
-                });
-                return token;
-            }
+            return token;
+            // if (Date.now() < token.accessTokenExpires) {
+            //     return token
+            // }
+            // return getWithRefreshToken(token);
         },
         async session({ session, token, user }) {
             if (token) {
@@ -76,7 +70,6 @@ async function getWithRefreshToken(token: JWT) {
                 access: response.data.access,
                 accessTokenExpires: Date.now() + 60 * 5 * 1000,
             }
-            console.log(data);
             return data
         }
     }

@@ -1,17 +1,29 @@
 import Image from "next/image";
 import Link from "next/link";
+import Button from "../utils/ui/Button";
 
 export default function Navbar() {
   return (
-    <nav className="w-full p-2 sticky top-0 bg-gradient-to-l  from-black to-gray-900">
-      <ul className="flex items-center gap-2">
-        <li>
-          <Link href="/">Home</Link>
-        </li>
-        <li>
-          <Link href="/novels">Novels</Link>
-        </li>
-      </ul>
+    <nav className="w-full p-2 sticky top-0 bg-zinc-900">
+      <div className="w-4/5 m-auto">
+        <ul className="flex items-center justify-between">
+          <li>
+            <Button className="py-2 px-3">
+              <Link href="/">Home</Link>
+            </Button>
+          </li>
+          <li>
+            <Button className="py-2 px-3">
+              <Link href="/novels">Novels</Link>
+            </Button>
+          </li>
+          <li>
+            <Button className="py-2 px-3">
+              <Link href="/profile">Profile</Link>
+            </Button>
+          </li>
+        </ul>
+      </div>
     </nav>
   );
 }

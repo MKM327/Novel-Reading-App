@@ -6,12 +6,12 @@ export const PUBLIC_API = axios.create({
     baseURL: "http://localhost:8000/api/v1/",
 })
 export default async function serverAPI() {
-    const { access } = await getServerSession(config);
+    const session = await getServerSession(config);
     return axios.create({
         baseURL: "http://localhost:8000/api/v1/",
         headers: {
             "Accept": "application/json",
-            "Authorization": "Bearer " + access,
+            "Authorization": "Bearer " + session?.access,
         }
     });
 }

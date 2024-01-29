@@ -5,8 +5,8 @@ from rest_framework.response import Response
 from .serializers import NovelSerializer, ChapterSerializer, AddChapterSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
-
-
+from rest_framework.exceptions import NotAuthenticated
+from rest_framework.views import APIView
 @api_view(['GET'])
 def get_routes(request):
     routes = [
@@ -20,31 +20,60 @@ def get_routes(request):
     return Response(routes)
 
 
-@api_view(['GET', 'PUT', 'DELETE'])
-@authentication_classes([JWTAuthentication])
-@permission_classes([IsAuthenticated])
-def novel(request, title):
-    try:
-        novel = Novel.objects.get(title=title)
-    except Novel.DoesNotExist:
-        return Response({"error": "Novel not found"}, status=404)
-    if request.method == 'GET':
+class NovelView(APIView):
+    description = "Get, Update or Delete a novel"
+
+    def get(self,request,title):
+        try:
+            novel = Novel.objects.get(title=title)
+        except Novel.DoesNotExist:
+            return Response({"error": "Novel not found"}, status=404)
         novel_serializer = NovelSerializer(novel)
         return Response(novel_serializer.data)
-    elif request.method == 'PUT':
+
+    def put(self, request, title):
+        try:
+            novel = Novel.objects.get(title=title)
+        except Novel.DoesNotExist:
+            return Response({"error": "Novel not found"}, status=404)
         novel_serializer = NovelSerializer(novel, data=request.data)
         if novel_serializer.is_valid():
             novel_serializer.save()
             return Response(novel_serializer.data)
         return Response(novel_serializer.errors, status=400)
-    elif request.method == 'DELETE':
+
+    def delete(self,request,title):
+        try:
+            novel = Novel.objects.get(title=title)
+        except Novel.DoesNotExist:
+            return Response({"error": "Novel not found"}, status=404)
         novel.delete()
         return Response({"message": "Novel deleted successfully"}, status=204)
 
+class NovelChapterView(APIView):
+    description = "Get or Add a chapter to a novel"
+    permission_classes = [IsAuthenticated]
+    def get(self,request,title):
+        try:
+            novel = Novel.objects.get(title=title)
+        except Novel.DoesNotExist:
+            return Response({"error": "Novel not found"}, status=404)
+        chapters = novel.chapter_set.all()
+        chapters_serializer = ChapterSerializer(chapters, many=True)
+        return Response(chapters_serializer.data)
+
+    def post(self,request,title):
+        try:
+            novel = Novel.objects.get(title=title)
+        except Novel.DoesNotExist:
+            return Response({"error": "Novel not found"}, status=404)
+        chapter_serializer = AddChapterSerializer(data=request.data)
+        if chapter_serializer.is_valid():
+            chapter_serializer.save(novel=novel)
+            return Response(chapter_serializer.data, status=201)
+        return Response(chapter_serializer.errors, status=400)
 
 @api_view(['GET', 'POST'])
-@authentication_classes([JWTAuthentication])
-@permission_classes([IsAuthenticated])
 def novel_chapters(request, title):
     try:
         novel = Novel.objects.get(title=title)
@@ -63,14 +92,14 @@ def novel_chapters(request, title):
 
 
 @api_view(['POST', 'GET'])
-@authentication_classes([JWTAuthentication])
-@permission_classes([IsAuthenticated])
 def create_novel(request):
     if request.method == 'GET':
         novels = Novel.objects.all()
         novels_serializer = NovelSerializer(novels, many=True)
         return Response(novels_serializer.data)
     elif request.method == 'POST':
+        if not request.user.is_authenticated:
+            raise NotAuthenticated("authentication credentials were not provided")
         novel_serializer = NovelSerializer(data=request.data)
         if novel_serializer.is_valid():
             novel_serializer.save()

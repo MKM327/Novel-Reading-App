@@ -1,5 +1,6 @@
 import { auth } from "@/app/api/auth/[...nextauth]/auth";
 import { PropsWithChildren } from "react";
+import NotLoggedIn from "./NotLoggedIn";
 
 type ProtectedRouteProps = PropsWithChildren;
 export default async function ProtectedRoute({
@@ -7,11 +8,5 @@ export default async function ProtectedRoute({
 }: ProtectedRouteProps) {
   const session = await auth();
 
-  return (
-    <div>
-      <div>Header</div>
-      {session && children}
-      <div>Footer</div>
-    </div>
-  );
+  return <>{session ? children : <NotLoggedIn />}</>;
 }

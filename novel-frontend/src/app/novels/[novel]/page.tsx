@@ -1,5 +1,5 @@
-import NovelInfo from "@/components/Novels/NovelInfo";
-import NovelOverview from "@/components/Novels/NovelOverview";
+import NovelInfo from "@/components/Novel/NovelInfo";
+import NovelOverview from "@/components/Novel/NovelOverview";
 import { fetchNovel, fetchChapters } from "@/services/fetchNovel";
 interface NovelPageProps {
   params: {

@@ -1,5 +1,6 @@
 import { Novel } from "@/services/fetchNovel";
 import Image from "next/image";
+import Button from "../utils/ui/Button";
 interface NovelInfoProps {
   novel: Novel;
 }
@@ -29,9 +30,7 @@ export default function NovelInfo({ novel }: NovelInfoProps) {
           </div>
           <p className="text-xs">{description}</p>
           <div>
-            <button className="bg-blue-700 p-3 rounded-lg font-bold">
-              CONTINUE READING
-            </button>
+            <Button>CONTINUE READING</Button>
           </div>
         </div>
       </div>
