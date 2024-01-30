@@ -5,7 +5,6 @@ import UsernamePasswordForm from "./UsernamePasswordForm";
 import axios from "axios";
 
 const fetcher = ({ url, body }: any) => {
-  console.log(url);
   return axios.post(url, body, {
     headers: {
       "Content-Type": "application/json",
