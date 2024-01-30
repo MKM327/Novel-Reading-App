@@ -17,9 +17,19 @@ export default function NovelCard({ novel }: NovelCardProps) {
           style={{ objectFit: "cover" }}
         />
       </div>
-      <div className="max-h-48 text-ellipsis overflow-hidden flex-1">
+      <div className="max-h-48  flex-1">
         <h1 className="text-xl">{novel.title}</h1>
-        <p className="text-sm">{novel.description}</p>
+        <div className="text-sm line-clamp-3">
+          <span className="text-xs">{novel.description}</span>
+        </div>
+        <div className="flex gap-3">
+          <div className="text-sm bg-zinc-900 p-1 rounded-md flex-wrap">
+            Genre one{" "}
+          </div>
+          <div className="text-sm bg-zinc-900 p-1 rounded-md flex-wrap">
+            Genra two
+          </div>
+        </div>
       </div>
     </div>
   );

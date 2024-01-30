@@ -28,3 +28,8 @@ def login(request):
         return Response({'user': serializer.data, 'refresh': str(token), 'access': str(token.access_token)})
     else:
         return {'error': 'Invalid Credentials', 'status': 401}
+
+
+@api_view(['POST'])
+def test(request):
+    return Response({'test': 'test'})

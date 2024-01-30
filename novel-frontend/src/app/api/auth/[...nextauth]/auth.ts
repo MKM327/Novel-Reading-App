@@ -57,7 +57,8 @@ export const config = {
             }
             return session
         },
-    }
+    },
+
 } satisfies NextAuthOptions
 
 async function getWithRefreshToken(token: JWT) {
