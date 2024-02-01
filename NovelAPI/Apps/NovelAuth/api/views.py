@@ -3,10 +3,28 @@ from django.db import IntegrityError
 from rest_framework.decorators import api_view
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
-from .serializers import UserSerializer
+from .serializers import UserSerializer, UserDetailsSerializer
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.views import APIView
+from  rest_framework_simplejwt.authentication import  JWTAuthentication
+from rest_framework.permissions import IsAuthenticated
 
+
+class UserDetailsView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = UserDetailsSerializer(data=request.data)
+        if serializer.is_valid():
+            user = request.user
+            user.first_name = serializer.data['first_name']
+            user.last_name = serializer.data['last_name']
+            user.email = serializer.data['email']
+            user.save()
+            return Response(serializer.data, status=200)
+        return Response(status=400)
 
 @api_view(['POST'])
 def register(request):

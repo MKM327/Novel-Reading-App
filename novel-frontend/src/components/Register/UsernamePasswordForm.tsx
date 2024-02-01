@@ -1,22 +1,30 @@
 "use client";
 import Button from "@/components/utils/ui/Button";
 import Input from "@/components/utils/ui/Input";
-import useHandleRegister from "@/hooks/register/useHandleRegister";
+import useRegisterContext from "@/hooks/register/useRegisterContext";
 import { ClipLoader } from "react-spinners";
-import { toast } from "react-toastify";
-import useSWR from "swr";
 
+interface Props {
+  setRegisterState: React.Dispatch<
+    React.SetStateAction<"username-password" | "personal-details">
+  >;
+}
 export default function UsernamePasswordForm() {
   const {
     usernameRef,
     secondPasswordRef,
-    loading,
+    firstFormState: formState,
     passwordRef,
     handleRegister,
-  } = useHandleRegister();
+  } = useRegisterContext();
 
   return (
-    <form className="flex flex-col gap-3" onSubmit={handleRegister}>
+    <form
+      className="flex flex-col gap-3"
+      onSubmit={(e) => {
+        handleRegister(e);
+      }}
+    >
       <h1>Create a new Account</h1>
       <div>
         <Input
@@ -45,7 +53,11 @@ export default function UsernamePasswordForm() {
       <div className="flex justify-center items-center">
         <Button className="flex items-center gap-2">
           Continue
-          <ClipLoader color="white" size={20} loading={loading} />
+          <ClipLoader
+            color="white"
+            size={20}
+            loading={formState === "loading"}
+          />
         </Button>
       </div>
       <div className="relative flex items-center justify-center">

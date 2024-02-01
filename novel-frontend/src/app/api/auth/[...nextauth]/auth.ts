@@ -5,7 +5,13 @@ import { PUBLIC_API } from "@/lib/exports"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { JWT } from "next-auth/jwt"
 import { get } from "http"
+interface jwtCallback {
+    token: JWT
+    user: any
+    account: any
+    trigger?: "signIn" | "signUp" | "update" | undefined
 
+}
 export const config = {
     secret: process.env.NEXAUTH_SECRET,
     providers: [
@@ -35,7 +41,12 @@ export const config = {
         updateAge: 5 * 60
     },
     callbacks: {
-        async jwt({ token, user, account }: { token: JWT, user: any, account: any }) {
+        async jwt({ token, user, account, trigger }: jwtCallback) {
+            console.log("here jwt")
+            if (trigger === "update") {
+                console.log("update")
+                console.log(token, user, account)
+            }
             if (user && account) {
                 return {
                     ...user,
@@ -49,6 +60,7 @@ export const config = {
             // return getWithRefreshToken(token);
         },
         async session({ session, token, user }) {
+            console.log("here session")
             if (token) {
                 session.user = token.user
                 session.access = token.access
