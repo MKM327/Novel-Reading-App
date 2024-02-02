@@ -25,7 +25,6 @@ function RegisterProvider({ children }: PropsWithChildren) {
     firstFormState,
     passwordRef,
     handleRegister,
-    tokens,
   } = useHandleUsernamePassword();
   const {
     handlePersonalDetails,
@@ -42,7 +41,6 @@ function RegisterProvider({ children }: PropsWithChildren) {
         firstFormState,
         passwordRef,
         handleRegister,
-        tokens,
         handlePersonalDetails,
         secondFormState,
         emailRef,

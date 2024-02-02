@@ -56,5 +56,5 @@ export default function useHandleUsernamePassword() {
             toast.error(err.response.data.error, { theme: 'dark', autoClose: 2000 });
         }
     }
-    return { usernameRef, passwordRef, secondPasswordRef, firstFormState, handleRegister, tokens };
+    return { usernameRef, passwordRef, secondPasswordRef, firstFormState, handleRegister };
 }
