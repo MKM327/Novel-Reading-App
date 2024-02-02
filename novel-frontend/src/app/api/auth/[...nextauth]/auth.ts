@@ -42,11 +42,6 @@ export const config = {
     },
     callbacks: {
         async jwt({ token, user, account, trigger }: jwtCallback) {
-            console.log("here jwt")
-            if (trigger === "update") {
-                console.log("update")
-                console.log(token, user, account)
-            }
             if (user && account) {
                 return {
                     ...user,
@@ -60,7 +55,6 @@ export const config = {
             // return getWithRefreshToken(token);
         },
         async session({ session, token, user }) {
-            console.log("here session")
             if (token) {
                 session.user = token.user
                 session.access = token.access

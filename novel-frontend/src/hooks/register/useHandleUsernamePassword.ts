@@ -1,6 +1,7 @@
 import { PUBLIC_API } from "@/lib/exports";
 import { Tokens } from "@/lib/types";
-import { useSession } from "next-auth/react";
+import axios from "axios";
+import { signIn, useSession } from "next-auth/react";
 import { FormEvent, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { z } from "zod";
@@ -16,8 +17,6 @@ export default function useHandleUsernamePassword() {
     const passwordRef = useRef<HTMLInputElement>(null);
     const secondPasswordRef = useRef<HTMLInputElement>(null);
     const [firstFormState, setFirstFormState] = useState<FormState>("idle");
-    const [tokens, setTokens] = useState<Tokens | null>(null);
-    const { data, update } = useSession();
     async function handleRegister(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
         setFirstFormState("loading");
@@ -48,9 +47,8 @@ export default function useHandleUsernamePassword() {
                 return;
             }
             setFirstFormState("success");
-            setTokens({ access: response.data.access, refresh: response.data.refresh });
+            signIn('credentials', { redirect: false, username: body.username, password: body.password });
             toast.success('Register Successful', { theme: 'dark', autoClose: 2000 });
-            await update({ ...response.data });
             return;
         }
         catch (err: any) {

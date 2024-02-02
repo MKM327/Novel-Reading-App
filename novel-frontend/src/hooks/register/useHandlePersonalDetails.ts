@@ -3,6 +3,7 @@ import { FormState } from "./useHandleUsernamePassword";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { BASE_URL, useGetClientAPI } from "@/lib/exports";
+import { useSession } from "next-auth/react";
 
 export default function useHandlePersonalDetails() {
     const emailRef = useRef<HTMLInputElement>(null);
@@ -10,7 +11,9 @@ export default function useHandlePersonalDetails() {
     const lastNameRef = useRef<HTMLInputElement>(null);
     const [secondFormState, setSecondFormState] = useState<FormState>("idle");
     let api = useGetClientAPI();
+    const { data } = useSession();
     const handlePersonalDetails = async (e: React.FormEvent<HTMLFormElement>) => {
+        console.log("session", data);
         setSecondFormState("loading");
         e.preventDefault();
         const email = emailRef.current?.value;
@@ -22,10 +25,10 @@ export default function useHandlePersonalDetails() {
             return;
         }
         try {
-            let response = await api.post("/auth/register/", { email, first_name: firstName, last_name: lastName });
+            let response = await api.post("auth/details/", { email, first_name: firstName, last_name: lastName })
             if (response.status !== 200) {
                 setSecondFormState("error");
-                toast.error("Something went wrong");
+                toast.error("Something went wrong You can change this later from your profile page");
                 return;
             }
             setSecondFormState("success");
