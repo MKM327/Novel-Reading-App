@@ -9,7 +9,6 @@ interface ContextProps {
   firstFormState: "idle" | "loading" | "error" | "success";
   passwordRef: React.RefObject<HTMLInputElement>;
   handleRegister: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
-  tokens: Tokens | null;
   handlePersonalDetails: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   secondFormState: "idle" | "loading" | "error" | "success";
   emailRef: React.RefObject<HTMLInputElement>;

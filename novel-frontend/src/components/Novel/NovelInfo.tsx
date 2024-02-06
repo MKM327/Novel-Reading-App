@@ -9,7 +9,7 @@ export default function NovelInfo({ novel }: NovelInfoProps) {
   return (
     <section className="flex gap-5 bg-gray-950 p-5">
       <div className="flex justify-center w-full gap-5">
-        <div>
+        <div className="">
           <Image
             src={
               "https://images.unsplash.com/photo-1592496431122-2349e0fbc666?q=80&w=2112&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
@@ -28,7 +28,9 @@ export default function NovelInfo({ novel }: NovelInfoProps) {
             <span>likes {likes}</span>
             <span>dislikes {dislikes}</span>
           </div>
-          <p className="text-xs">{description}</p>
+          <div className="">
+            <p className="text-xs line-clamp-3">{description}</p>
+          </div>
           <div>
             <Button>CONTINUE READING</Button>
           </div>

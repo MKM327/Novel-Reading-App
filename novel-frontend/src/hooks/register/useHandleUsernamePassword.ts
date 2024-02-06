@@ -1,9 +1,7 @@
+import { showToast } from "@/components/utils/toast";
 import { PUBLIC_API } from "@/lib/exports";
-import { Tokens } from "@/lib/types";
-import axios from "axios";
-import { signIn, useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import { FormEvent, useRef, useState } from "react";
-import { toast } from "react-toastify";
 import { z } from "zod";
 const registerFormSchema = z.object({
     username: z.string().min(3).max(20),
@@ -22,7 +20,7 @@ export default function useHandleUsernamePassword() {
         setFirstFormState("loading");
         if (passwordRef.current?.value !== secondPasswordRef.current?.value) {
             setFirstFormState("error");
-            toast.error('Passwords do not match', { theme: 'dark', autoClose: 2000 });
+            showToast("Passwords do not match", "error");
             return;
         }
         type RegisterForm = z.infer<typeof registerFormSchema>;
@@ -30,30 +28,29 @@ export default function useHandleUsernamePassword() {
             username: usernameRef.current?.value,
             password: passwordRef.current?.value,
         } as RegisterForm;
-        // try {
-        //     registerFormSchema.parse(body);
-        // }
-        // catch (err) {
-        //     setFirstFormState("error");
-        //     toast.error("Invalid input", { theme: 'dark', autoClose: 2000 })
-        //     return;
-        // }
+        try {
+            registerFormSchema.parse(body);
+        }
+        catch (err: any) {
+            setFirstFormState("error");
+            const errorMessage = err.errors[0].message;
+            showToast(errorMessage, "error");
+            return;
+        }
         try {
             let response = await PUBLIC_API.post('/auth/register/', body);
             if (response.status !== 200) {
-                console.log(response.data);
                 setFirstFormState("error");
-                toast.error(response.data.error, { theme: 'dark', autoClose: 2000 });
+                showToast(response.data.error, "error");
                 return;
             }
             setFirstFormState("success");
             signIn('credentials', { redirect: false, username: body.username, password: body.password });
-            toast.success('Register Successful', { theme: 'dark', autoClose: 2000 });
-            return;
+            showToast("Account created successfully", "success");
         }
         catch (err: any) {
             setFirstFormState("error");
-            toast.error(err.response.data.error, { theme: 'dark', autoClose: 2000 });
+            showToast(err.response.data.error, "error");
         }
     }
     return { usernameRef, passwordRef, secondPasswordRef, firstFormState, handleRegister };

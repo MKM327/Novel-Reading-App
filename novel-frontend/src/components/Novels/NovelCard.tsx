@@ -1,5 +1,6 @@
 import { Novel } from "@/services/fetchNovel";
 import Image from "next/image";
+import Link from "next/link";
 
 interface NovelCardProps {
   novel: Novel;
@@ -18,7 +19,9 @@ export default function NovelCard({ novel }: NovelCardProps) {
         />
       </div>
       <div className="max-h-48  flex-1">
-        <h1 className="text-xl">{novel.title}</h1>
+        <Link href={`/novels/${novel.title}`} className="text-xl">
+          {novel.title}
+        </Link>
         <div className="text-sm line-clamp-3">
           <span className="text-xs">{novel.description}</span>
         </div>
