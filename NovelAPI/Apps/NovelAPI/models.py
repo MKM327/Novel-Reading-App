@@ -28,8 +28,8 @@ class Chapter(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    favorites = models.ManyToManyField(Novel ,related_name='favorites')
-    read = models.ManyToManyField(Chapter, related_name='read')
+    favorites = models.ManyToManyField(Novel ,related_name='favorites', blank=True)
+    read = models.ManyToManyField(Chapter, related_name='read', blank=True)
     likes = models.IntegerField(default=0)
 
     def __str__(self):

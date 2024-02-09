@@ -27,7 +27,7 @@ export default function NovelCard({ novel }: NovelCardProps) {
         </div>
         <div className="flex gap-3">
           <div className="text-sm bg-zinc-900 p-1 rounded-md flex-wrap">
-            Genre one{" "}
+            Genre one
           </div>
           <div className="text-sm bg-zinc-900 p-1 rounded-md flex-wrap">
             Genra two

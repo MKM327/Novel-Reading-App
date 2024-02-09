@@ -1,8 +1,8 @@
 
-from Apps.NovelAPI.models import Novel, Chapter
+from Apps.NovelAPI.models import Novel, Chapter,Profile
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
-from .serializers import NovelSerializer, ChapterSerializer, AddChapterSerializer
+from .serializers import FavoriteNovelSerializer, NovelSerializer, ChapterSerializer, AddChapterSerializer, ProfileSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.exceptions import NotAuthenticated
@@ -22,7 +22,6 @@ def get_routes(request):
 
 class NovelView(APIView):
     description = "Get, Update or Delete a novel"
-
     def get(self,request,title):
         try:
             novel = Novel.objects.get(title=title)
@@ -72,7 +71,21 @@ class NovelChapterView(APIView):
             chapter_serializer.save(novel=novel)
             return Response(chapter_serializer.data, status=201)
         return Response(chapter_serializer.errors, status=400)
-
+class ProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self,request):
+        user = request.user
+        profile = Profile.objects.get(user=user)
+        profile_serializer = ProfileSerializer(profile)
+        return Response(profile_serializer.data)
+class ProfileFavoritesView(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self,request):
+        user = request.user
+        profile = Profile.objects.get(user=user)
+        favorites = profile.favorites.all()
+        novels_serializer = FavoriteNovelSerializer(favorites, many=True)
+        return Response(novels_serializer.data)
 @api_view(['GET', 'POST'])
 def novel_chapters(request, title):
     try:

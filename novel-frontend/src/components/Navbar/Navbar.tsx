@@ -26,9 +26,14 @@ export default async function Navbar() {
               </Button>
             </li>
           ) : (
-            <Button>
-              <Link href={"/register"}>Register</Link>
-            </Button>
+            <div className="flex gap-3">
+              <Button>
+                <Link href={"/register"}>Register</Link>
+              </Button>
+              <Button>
+                <Link href={"/api/auth/signin/credentials"}>Login</Link>
+              </Button>
+            </div>
           )}
         </ul>
       </div>

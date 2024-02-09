@@ -3,6 +3,8 @@ from django.db import IntegrityError
 from rest_framework.decorators import api_view
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
+
+from Apps.NovelAPI.models import Profile
 from .serializers import UserSerializer, UserDetailsSerializer
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -30,6 +32,7 @@ class UserDetailsView(APIView):
 def register(request):
     try:
         user = User.objects.create_user(username=request.data['username'], password=request.data['password'])
+        Profile.objects.create(user=user)
         user.save()
     except IntegrityError:
         return Response({"error": "A user with this username already exists."}, status=400)
