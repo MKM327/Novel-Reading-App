@@ -18,7 +18,6 @@ class AddChapterSerializer(ModelSerializer):
     class Meta:
         model = Chapter
         fields = ['title', 'content']
-
 class ProfileSerializer(ModelSerializer):
     class Meta:
         model = Profile

@@ -51,17 +51,27 @@ class NovelView(APIView):
 
 class NovelChapterView(APIView):
     description = "Get or Add a chapter to a novel"
-    permission_classes = [IsAuthenticated]
-    def get(self,request,title):
+    def get(self,request,title,chapter_name):
         try:
             novel = Novel.objects.get(title=title)
         except Novel.DoesNotExist:
             return Response({"error": "Novel not found"}, status=404)
-        chapters = novel.chapter_set.all()
-        chapters_serializer = ChapterSerializer(chapters, many=True)
-        return Response(chapters_serializer.data)
-
+        try:
+            chapter = novel.chapter_set.get(title=chapter_name)
+        except Chapter.DoesNotExist:
+            return Response({"error": "Chapter not found"}, status=404)
+        chapter_serializer = ChapterSerializer(chapter)
+        return Response(chapter_serializer.data)
     def post(self,request,title):
+        try:
+            novel = Novel.objects.get(title=title)
+        except Novel.DoesNotExist:
+            return Response({"error": "Novel not found"}, status=404)
+        chapter_serializer = AddChapterSerializer(data=request.data)
+        if chapter_serializer.is_valid():
+            chapter_serializer.save(novel=novel)
+            return Response(chapter_serializer.data, status=201)
+    def post (self,request,title):
         try:
             novel = Novel.objects.get(title=title)
         except Novel.DoesNotExist:
@@ -118,8 +128,7 @@ def create_novel(request):
             novel_serializer.save()
             return Response(novel_serializer.data, status=201)
         return Response(novel_serializer.errors, status=400)
-
-
+    
 @api_view(['GET', 'PUT', 'DELETE','PATCH'])
 @authentication_classes([JWTAuthentication])
 @permission_classes([IsAuthenticated])
